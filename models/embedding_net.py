@@ -86,7 +86,7 @@ class EmbeddingNet(nn.Module):
 
         dropouts:
             A single integer or a list of integers defining the dropout
-            layers rates applyied right after each of hidden layers.
+            layers rates applied right after each of hidden layers.
 
     """
 

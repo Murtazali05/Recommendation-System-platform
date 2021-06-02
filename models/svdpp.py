@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 
 
@@ -94,3 +96,31 @@ class SVDpp:
             rmse += eui ** 2
         print('rmse of test data is', np.sqrt(rmse / test_data.shape[0]))
         return np.sqrt(rmse / test_data.shape[0])
+
+    def predict_recommendations_for_specific_user(self, test_data, user_id=None, N=5):
+        test_data = np.array(test_data)
+
+        if user_id is None:
+            user_id = random.randint(0, test_data.shape[0])
+
+        print("Predicting Recommendations for user_id: {}".format(user_id))
+        predicted_rating = []
+        for i in range(test_data.shape[0]):
+            item_id = test_data[i, 1]
+            predicted_rating.append((item_id, self.predict(user_id, item_id)))
+
+        recs_df = predicted_rating.sort(key=lambda x: x[1])[0:N]
+        recs = [item_rating_tuple[0] for item_rating_tuple in recs_df]
+
+        return recs
+
+    def get_recommendations(self, test_data):
+        test_data = np.array(test_data)
+
+        predicted_rating = []
+        for i in range(test_data.shape[0]):
+            user_id = test_data[i, 0]
+            item_id = test_data[i, 1]
+            predicted_rating.append(self.predict(user_id, item_id))
+
+        return predicted_rating

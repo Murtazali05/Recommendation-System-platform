@@ -1,3 +1,5 @@
+import random
+
 import numpy as np
 import pandas as pd
 
@@ -73,3 +75,16 @@ def create_tabular_data(ratings, users, movies):
     df = df[cols]
     df.fillna(value=0, inplace=True)
     return df
+
+
+def preprocessing_for_mf():
+    data = pd.read_csv('ml-1m/ratings.dat', sep='::', names=['userId', 'movieId', 'rating', 'timestamp'],
+                       engine='python')
+    data = np.array(data.iloc[:, :3]).tolist()
+    np.random.seed(1234)
+    random.shuffle(data)
+    train_data = data[:int(len(data) * 0.8)]
+    test_data = data[int(len(data) * 0.8):]
+    print('load data finished')
+    print('total data ', len(data))
+    return train_data, test_data, data

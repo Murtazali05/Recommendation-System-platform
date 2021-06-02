@@ -57,14 +57,16 @@ class SVD:
                 self.pu[user_id] += gamma * (eui * tmp - Lambda * self.pu[user_id])
             gamma = 0.93 * gamma  # why?
 
-    def predict_recommendations(self, unseen_set, user_id=None, N=5):
+    def predict_recommendations_for_specific_user(self, test_data, user_id=None, N=5):
+        test_data = np.array(test_data)
+
         if user_id is None:
-            user_id = random.randint(0, unseen_set.shape[0])
+            user_id = random.randint(0, test_data.shape[0])
 
         print("Predicting Recommendations for user_id: {}".format(user_id))
         predicted_rating = []
-        for i in range(unseen_set.shape[1]):
-            item_id = unseen_set[user_id, i]
+        for i in range(test_data.shape[0]):
+            item_id = test_data[i, 1]
             predicted_rating.append((item_id, self.predict(user_id, item_id)))
 
         recs_df = predicted_rating.sort(key=lambda x: x[1])[0:N]
@@ -72,7 +74,18 @@ class SVD:
 
         return recs
 
-    def rmse(self, test_data):
+    def get_recommendations(self, test_data):
+        test_data = np.array(test_data)
+
+        predicted_rating = []
+        for i in range(test_data.shape[0]):
+            user_id = test_data[i, 0]
+            item_id = test_data[i, 1]
+            predicted_rating.append(self.predict(user_id, item_id))
+
+        return predicted_rating
+
+    def test(self, test_data):
         # rmse
         test_data = np.array(test_data)
         print('test data size', test_data.shape)
